@@ -10,6 +10,7 @@ class ReportDOM {
 
   async init() {
     this.getAPI = await api;
+
     // console.log(this.getAPI);
     this.displayDescription();
     this.displayTodayWeather();
@@ -22,14 +23,27 @@ class ReportDOM {
     const descriptionDiv = document.querySelector(".decription");
     const hoursSpan = descriptionDiv.querySelector(".hours");
     const minutesSpan = descriptionDiv.querySelector(".minutes");
+    const weatherIconDiv = descriptionDiv.querySelector(
+      ".description-weather-icon"
+    );
+    const weatherIconImg = document.createElement("img");
 
     const description = this.getAPI.getDescription();
+    // console.log(description);
     this.timezoneTitle.textContent = description.timezone;
     this.localDescription.textContent = description.localDescription;
     const currentTime = new Date();
 
     hoursSpan.textContent = currentTime.getHours() + ":";
     minutesSpan.textContent = currentTime.getMinutes();
+
+    const weatherIcon = description.weatherIcon;
+
+    import(`../resources/icon/${weatherIcon}.png`).then((module) => {
+      console.log(module);
+    });
+
+    weatherIconDiv.appendChild(weatherIconImg);
   }
 
   displayTodayWeather() {
@@ -98,7 +112,7 @@ class ReportDOM {
   displayDailyWeather() {
     const dailyWeathers = this.getAPI.getdailyWeather();
     const dailyWrapper = document.querySelector(".daily-list");
-    console.log(dailyWeathers);
+    // console.log(dailyWeathers);
     dailyWeathers.forEach((dailyWeather) => {
       const dailyWeatherDiv = document.createElement("div");
       const dailyConditionSpan = document.createElement("div");
@@ -138,7 +152,7 @@ class ReportDOM {
 
   displayBackgroundPhoto() {
     const backgroundDiv = document.querySelector("section");
-    console.log(this.getAPI.getBackgroundURL());
+    // console.log(this.getAPI.getBackgroundURL());
     backgroundDiv.style.backgroundImage = `url(${this.getAPI.getBackgroundURL()}`;
   }
 }

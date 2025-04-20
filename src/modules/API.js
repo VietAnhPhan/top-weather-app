@@ -12,7 +12,7 @@ class API {
 
   async init() {
     await this.setCoordinates();
-    await this.setWeahterForecast();
+    await this.setWeatherForecast();
     await this.setBackgroundWeather();
 
     return this;
@@ -21,6 +21,10 @@ class API {
 
   async setCoordinates() {
     try {
+      if (localStorage.getItem("coordination")) {
+        this.coordination = JSON.parse(localStorage.getItem("coordination"));
+        return;
+      }
       const location = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
@@ -29,21 +33,34 @@ class API {
         latitude: location.coords.latitude,
         longtitude: location.coords.longitude,
       };
+      console.log(this.coordination);
+      localStorage.setItem("coordination", JSON.stringify(this.coordination));
     } catch (error) {
       console.log("Failed to get coordination: ", error);
     }
   }
 
-  async setWeahterForecast() {
+  async setWeatherForecast() {
+    if (localStorage.getItem("weather")) {
+      this.weather = JSON.parse(localStorage.getItem("weather"));
+      return;
+    }
     const weather = await fetch(
       `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${
         this.coordination.latitude
       },${this.coordination.longtitude}?key=${this.#WEATHER_API_KEY}`
     );
     this.weather = await weather.json();
+
+    localStorage.setItem("weather", JSON.stringify(this.weather));
   }
 
   async setBackgroundWeather() {
+    if (localStorage.getItem("backgroundURL")) {
+      this.backgroundURL = localStorage.getItem("backgroundURL");
+      return;
+    }
+
     const client = createClient(this.#PEXELS_API_KEY);
 
     const query = "Nature";
@@ -54,6 +71,7 @@ class API {
     });
 
     this.backgroundURL = searchedphotos.photos[0].src.landscape;
+    localStorage.setItem("backgroundURL", this.backgroundURL);
   }
 
   getCoordinates() {
@@ -68,6 +86,7 @@ class API {
     return {
       timezone: this.weather.timezone,
       localDescription: this.weather.description,
+      weatherIcon: this.weather.days[0].icon,
     };
   }
 
@@ -106,6 +125,7 @@ class API {
       minTemp: day.tempmin,
       feelslike: day.feelslike,
       humidity: day.humidity,
+      weatherIcon: day.conditions,
     }));
 
     return dailyWeather;
