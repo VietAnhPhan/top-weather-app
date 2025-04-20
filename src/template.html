@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="shortcut icon" href="./resources/icon/weather-forecast.png" type="image/x-icon">
+</head>
+
+<body>
+
+    <section>
+        <div class="container">
+            <div class="decription gradient-bg">
+                <p>Time Zone: <span class="timezone"></span> </p>
+                <p class="local-description"></p>
+                <div><span class="hours"></span><span class="minutes"></span></div>
+                <div class="today-weather ">
+                    <p class="today-date"></p>
+                    <p class="today-condition"></p>
+                    <div class="today-details">
+                        <div><span>Max temp: </span><span class="today-max-temp"></span></div>
+                        <div><span>Min temp: </span><span class="today-min-temp"></span></div>
+                        <div><span>Avg temp: </span><span class="today-avg-temp"></span></div>
+                        <div><span>Humidity: </span><span class="today-humidity"></span></div>
+                        <div><span>UVindex: </span><span class="today-uvindex"></span></div>
+                        <div><span>Sunrise: </span><span class="today-sunrise"></span></div>
+                        <div><span>Sunset: </span><span class="today-sunset"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hourly gradient-bg">
+                <span class="hourly-title">Hourly</span>
+                <div class="hourly-wrapper">
+                    <div class="hourly-list"></div>
+                </div>
+            </div>
+            <div class="daily gradient-bg">
+                <span class="daily-title">Daily</span>
+                <div class="daily-wrapper">
+                    <div class="daily-list"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</body>
+
+</html>

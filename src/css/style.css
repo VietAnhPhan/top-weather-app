@@ -1,0 +1,100 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('../resources/fonts/Poppins-Regular.ttf');
+    font-weight: regular;
+    font-style: normal;
+}
+
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+
+    /* display: grid; */
+    grid-template-columns: auto 1fr;
+    color: white;
+    max-width: 1110px;
+    margin-inline: auto;
+    border: 3px solid rebeccapurple;
+    /* overflow-x: hidden; */
+
+}
+
+.hourly {}
+
+.daily {}
+
+.decription,
+.today-weather,
+.hourly-list,
+.daily-wrapper {
+    /* background-color: rgba(0, 0, 0, 0.5); */
+
+}
+
+.today-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.hourly-list,
+.daily-list {
+    display: flex;
+    gap: 2rem;
+    /* grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-auto-flow: column; */
+    width: max-content;
+    padding-inline: 10px;
+
+}
+
+section {
+    /* background-image: url("../resources/images/bg_foggy_night.png"); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* height: 100dvh; */
+
+}
+
+.hourly-wrapper,
+.daily-wrapper {
+    overflow-x: auto;
+    width: 100%;
+
+
+}
+
+.hourly-item,
+.daily-item {
+    text-align: center;
+    padding-block: 21px;
+
+}
+
+.hourly,
+.daily {
+    margin-block: 23px;
+    padding-block: 21px;
+}
+
+.hourly-title,
+.daily-title {
+    text-align: center;
+    display: block;
+}
+
+.gradient-bg {
+    background: linear-gradient(-60deg,
+            rgba(255, 255, 255, 50%) 0%,
+            rgba(235, 235, 235, 36.74%) 20%,
+            rgba(224, 224, 224, 28.75%) 28%,
+            rgba(212, 212, 212, 21.13%) 40%,
+            rgba(207, 207, 207, 17.56%) 48%,
+            rgba(202, 202, 202, 14.34%) 54%,
+            rgba(200, 200, 200, 12.63%) 59%,
+            rgba(196, 196, 196, 10%) 67%);
+    border-radius: 12px;
+}
