@@ -1,1 +1,4 @@
-# Template for package.json and webpack.config.js
+# Weather App of The Odin Project
+
+Show your current local weather
+Search for specific local weather
