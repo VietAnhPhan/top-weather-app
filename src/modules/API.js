@@ -82,11 +82,13 @@ class API {
     return this.weather.timezone;
   }
 
-  getDescription() {
+  getCurrentOverview() {
     return {
+      address: this.weather.resolvedAddress,
       timezone: this.weather.timezone,
       localDescription: this.weather.description,
       weatherIcon: this.weather.days[0].icon,
+      date: this.weather.days[0].datetime,
     };
   }
 

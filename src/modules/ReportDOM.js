@@ -3,7 +3,6 @@ import { api } from "./API";
 class ReportDOM {
   constructor() {
     this.timezoneTitle = document.querySelector(".timezone");
-    this.localDescription = document.querySelector(".local-description");
 
     this.getAPI = null;
   }
@@ -12,45 +11,25 @@ class ReportDOM {
     this.getAPI = await api;
 
     // console.log(this.getAPI);
-    this.displayDescription();
-    this.displayTodayWeather();
+    this.displayCurrentOverview();
+    this.displayCurrentWeather();
     this.displayHourlyWeather();
     this.displayDailyWeather();
     this.displayBackgroundPhoto();
   }
 
-  displayDescription() {
-    const descriptionDiv = document.querySelector(".decription");
-    const hoursSpan = descriptionDiv.querySelector(".hours");
-    const minutesSpan = descriptionDiv.querySelector(".minutes");
-    const weatherIconDiv = descriptionDiv.querySelector(
-      ".description-weather-icon"
-    );
-    const weatherIconImg = document.createElement("img");
+  displayCurrentOverview() {
+    const currentOverview = this.getAPI.getCurrentOverview();
 
-    const description = this.getAPI.getDescription();
-    // console.log(description);
-    this.timezoneTitle.textContent = description.timezone;
-    this.localDescription.textContent = description.localDescription;
-    const currentTime = new Date();
-
-    hoursSpan.textContent = currentTime.getHours() + ":";
-    minutesSpan.textContent = currentTime.getMinutes();
-
-    const weatherIcon = description.weatherIcon;
-
-    import(`../resources/icon/${weatherIcon}.png`).then((module) => {
-      console.log(module);
-    });
-
-    weatherIconDiv.appendChild(weatherIconImg);
+    this.displayLocalTimezone(currentOverview.timezone);
+    this.displayLocalWeatherCondition(currentOverview.localDescription);
+    this.displayCurrentWeatherIcon(currentOverview.weatherIcon);
+    this.displayCurrentDatetime();
   }
 
-  displayTodayWeather() {
+  displayCurrentWeather() {
     const todayWeatherDiv = document.querySelector(".today-weather");
-    const todayDaySpan = todayWeatherDiv.querySelector(".today-date");
-    const todayConditionSpan =
-      todayWeatherDiv.querySelector(".today-condition");
+
     const todayDetails = todayWeatherDiv.querySelector(".today-details");
     const todayMinTempSpan = todayDetails.querySelector(".today-min-temp");
     const todayMaxTempSpan = todayDetails.querySelector(".today-max-temp");
@@ -61,8 +40,7 @@ class ReportDOM {
     const todaySunsetSpan = todayDetails.querySelector(".today-sunset");
 
     const todayWeather = this.getAPI.getTodayWeather();
-    todayDaySpan.textContent = todayWeather.date;
-    todayConditionSpan.textContent = todayWeather.conditions;
+
     todayMinTempSpan.textContent = todayWeather.minTemp;
     todayMaxTempSpan.textContent = todayWeather.maxTemp;
     todayAvgTempSpan.textContent = todayWeather.avgTemp;
@@ -154,6 +132,59 @@ class ReportDOM {
     const backgroundDiv = document.querySelector("section");
     // console.log(this.getAPI.getBackgroundURL());
     backgroundDiv.style.backgroundImage = `url(${this.getAPI.getBackgroundURL()}`;
+  }
+
+  displayCurrentWeatherIcon(weatherIcon) {
+    const weatherIconDiv = document.querySelector(".description-weather-icon");
+
+    const weatherIconImg = document.createElement("img");
+    import(`../resources/icon/${weatherIcon}.png`).then((module) => {
+      weatherIconImg.src = module.default;
+    });
+
+    weatherIconDiv.appendChild(weatherIconImg);
+  }
+
+  displayCurrentDatetime() {
+    const currentDaySpan = document.querySelector(".today-date");
+
+    // console.log(currentOverview);
+
+    const currentDateTime = new Date();
+    const dayOption = { weekday: "long" };
+    const monthOption = { month: "long" };
+
+    const currentDay = new Intl.DateTimeFormat("en-US", dayOption).format(
+      currentDateTime
+    );
+
+    const currentMonth = new Intl.DateTimeFormat("en-US", monthOption).format(
+      currentDateTime
+    );
+
+    let formatedCurrentDateTime =
+      currentDay +
+      "," +
+      currentDateTime.getDate() +
+      " " +
+      currentMonth +
+      " " +
+      "at" +
+      " " +
+      currentDateTime.getHours() +
+      ":" +
+      currentDateTime.getMinutes();
+    currentDaySpan.textContent = formatedCurrentDateTime;
+  }
+
+  displayLocalWeatherCondition(localDescription) {
+    const localWeatherCondition = document.querySelector(".local-description");
+    localWeatherCondition.textContent = localDescription;
+  }
+
+  displayLocalTimezone(localTimezone) {
+    const currentOverviewDiv = document.querySelector(".current-overview");
+    this.timezoneTitle.textContent = localTimezone;
   }
 }
 export { ReportDOM };
