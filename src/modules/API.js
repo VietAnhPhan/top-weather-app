@@ -127,7 +127,7 @@ class API {
       minTemp: day.tempmin,
       feelslike: day.feelslike,
       humidity: day.humidity,
-      weatherIcon: day.conditions,
+      weatherIcon: day.icon,
     }));
 
     return dailyWeather;

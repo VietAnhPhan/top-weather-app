@@ -36,7 +36,7 @@ body {
     max-width: 80%;
     margin-inline: auto;
     border: 3px solid rebeccapurple;
-    padding-block: 80px 178px;
+    padding-block: 20px 178px;
     /* overflow-x: hidden; */
 
 }
@@ -96,11 +96,41 @@ body {
     overflow: auto;
 }
 
+.daily-hour {
+    font-weight: 600;
+}
+
+.daily-condition {
+    font-size: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 25%);
+}
+
+.daily-weather-values {
+    padding-top: 8px;
+}
+
+.daily-max-temp,
+.daily-min-temp,
+.daily-feelslike-temp,
+.daily-humidity {
+    font-weight: 600;
+    color: rgba(16, 254, 250, 88.3%);
+    font-size: 14px;
+}
+
+.daily-weather-icon {
+    padding-block: 12px;
+    max-width: 104px;
+}
+
+
+
 .current-overview,
 .hourly,
 .daily {
     /* background-color: rgba(0, 0, 0, 0.5); */
-    padding: 40px;
+    padding: 20px 40px;
 }
 
 .today-date {
@@ -173,8 +203,12 @@ section {
 
 .hourly-title,
 .daily-title {
-
-    display: block;
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .gradient-bg {

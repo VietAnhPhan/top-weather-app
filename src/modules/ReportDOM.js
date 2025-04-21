@@ -10,7 +10,7 @@ class ReportDOM {
   async init() {
     this.getAPI = await api;
 
-    // console.log(this.getAPI);
+    console.log(this.getAPI);
     this.displayCurrentOverview();
     this.displayCurrentWeather();
     this.displayHourlyWeather();
@@ -90,39 +90,53 @@ class ReportDOM {
   displayDailyWeather() {
     const dailyWeathers = this.getAPI.getdailyWeather();
     const dailyWrapper = document.querySelector(".daily-list");
-    // console.log(dailyWeathers);
+    console.log(dailyWeathers);
     dailyWeathers.forEach((dailyWeather) => {
       const dailyWeatherDiv = document.createElement("div");
       const dailyConditionSpan = document.createElement("div");
+      const dailyWeatherValuesDiv = document.createElement("div");
       const dailyMaxTempSpan = document.createElement("div");
       const dailyMinTempSpan = document.createElement("div");
       const dailyFeelsLikeTempSpan = document.createElement("div");
       const dailySpan = document.createElement("div");
+      const weatherIcon = document.createElement("img");
       const dailyHumiditySpan = document.createElement("div");
 
       dailyWeatherDiv.classList.add("daily-item");
+      dailySpan.classList.add("daily-hour");
+      weatherIcon.classList.add("daily-weather-icon");
+      dailyConditionSpan.classList.add("daily-condition");
+      dailyWeatherValuesDiv.classList.add("daily-weather-values");
       dailyMaxTempSpan.classList.add("daily-max-temp");
       dailyMinTempSpan.classList.add("daily-min-temp");
       dailyFeelsLikeTempSpan.classList.add("daily-feelslike-temp");
-      dailySpan.classList.add("daily-hour");
       dailyHumiditySpan.classList.add("daily-humidity");
-      dailyConditionSpan.classList.add("daily-condition");
 
       dailySpan.textContent = dailyWeather.day;
-      dailyConditionSpan.textContent = dailyWeather.conditions;
-      dailyMaxTempSpan.textContent = dailyWeather.maxTemp;
-      dailyMinTempSpan.textContent = dailyWeather.minTemp;
-      dailyFeelsLikeTempSpan.textContent = dailyWeather.feelslike;
-      dailyHumiditySpan.textContent = dailyWeather.humidity;
+      console.log(dailyWeather.weatherIcon);
+      import(
+        `../resources/icon/small-weather/${dailyWeather.weatherIcon}.png`
+      ).then((module) => {
+        weatherIcon.src = module.default;
+      });
 
-      dailyWeatherDiv.append(
-        dailySpan,
-        dailyConditionSpan,
+      dailyConditionSpan.innerHTML = dailyWeather.conditions;
+      dailyMaxTempSpan.innerHTML = "Max: " + dailyWeather.maxTemp + " &deg;C";
+      dailyMinTempSpan.innerHTML = "Min: " + dailyWeather.minTemp + " &deg;C";
+      dailyFeelsLikeTempSpan.innerHTML =
+        "Feelslike: " + dailyWeather.feelslike + " &deg;C";
+      dailyHumiditySpan.innerHTML = "Hum: " + dailyWeather.humidity;
+
+      dailyWeatherDiv.append(dailySpan, weatherIcon, dailyConditionSpan);
+
+      dailyWeatherValuesDiv.append(
         dailyMaxTempSpan,
         dailyMinTempSpan,
         dailyFeelsLikeTempSpan,
         dailyHumiditySpan
       );
+
+      dailyWeatherDiv.appendChild(dailyWeatherValuesDiv);
 
       dailyWrapper.append(dailyWeatherDiv);
     });
