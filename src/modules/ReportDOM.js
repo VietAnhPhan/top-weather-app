@@ -238,7 +238,9 @@ class ReportDOM {
       event.preventDefault();
       // console.log(searchLocationInput.value);
       await this.getAPI.setWeatherForecast(searchLocationInput.value);
-
+      await this.getAPI.setBackgroundWeather(
+        this.getAPI.getFormattedLocation()
+      );
       this.displayOverview();
       this.displayHourlyWeather();
       this.displayDailyWeather();

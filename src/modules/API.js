@@ -57,6 +57,10 @@ class API {
         );
 
         this.weather = await searchedResultWeather.json();
+
+        // this.setBackgroundWeather(location);
+
+        console.log(location);
       } catch (error) {
         console.log(error);
       }
@@ -71,30 +75,49 @@ class API {
 
       this.weather = await searchedResultWeather.json();
       localStorage.setItem("weather", JSON.stringify(this.weather));
+      // localStorage.setItem("backgroundURL", this.backgroundURL);
     }
   }
 
-  async setBackgroundWeather() {
-    if (localStorage.getItem("backgroundURL")) {
+  async setBackgroundWeather(location = null) {
+    if (localStorage.getItem("backgroundURL") && !location) {
+      // console.log(JSON.parse(localStorage.getItem("weather")).timezone);
       this.backgroundURL = localStorage.getItem("backgroundURL");
+      return;
+    }
+
+    if (!localStorage.getItem("backgroundURL")) {
+      location = this.getFormattedLocation();
+      const client = createClient(this.#PEXELS_API_KEY);
+
+      const query = location;
+
+      const searchedphotos = await client.photos.search({
+        query,
+        per_page: 1,
+      });
+
+      this.backgroundURL = searchedphotos.photos[0].src.original;
+      localStorage.setItem("backgroundURL", this.backgroundURL);
       return;
     }
 
     const client = createClient(this.#PEXELS_API_KEY);
 
-    const query = "hochiminh";
+    const query = location;
 
-    // const searchedphotos = await client.photos.search({
-    //   query,
-    //   per_page: 1,
-    // });
-
-    const searchedphoto = await client.photos.show({
-      id: " 9877276",
+    const searchedphotos = await client.photos.search({
+      query,
+      per_page: 1,
     });
 
-    this.backgroundURL = searchedphoto.src.original;
-    localStorage.setItem("backgroundURL", this.backgroundURL);
+    this.backgroundURL = searchedphotos.photos[0].src.original;
+
+    // const searchedphoto = await client.photos.show({
+    //   id: " 9877276",
+    // });
+
+    console.log(this.backgroundURL);
   }
 
   getCoordinates() {
@@ -166,6 +189,14 @@ class API {
 
   getWeather() {
     return this.weather;
+  }
+
+  getFormattedLocation() {
+    const timezone = this.weather.timezone;
+    const underscoreLocation = timezone.split("/")[1];
+    const removedUnderscoreLocation = underscoreLocation.replace(/_/g, " ");
+
+    return removedUnderscoreLocation;
   }
 }
 
