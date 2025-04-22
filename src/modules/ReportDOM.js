@@ -1,4 +1,5 @@
 import { api } from "./API";
+import defaultIcon from "../resources/icon/small-weather/cloudy.png";
 
 class ReportDOM {
   constructor() {
@@ -11,23 +12,28 @@ class ReportDOM {
     this.getAPI = await api;
 
     console.log(this.getAPI);
-    this.displayCurrentOverview();
-    this.displayCurrentWeather();
+    this.displayOverview();
     this.displayHourlyWeather();
     this.displayDailyWeather();
     this.displayBackgroundPhoto();
+    this.displaySearchResult();
   }
 
-  displayCurrentOverview() {
-    const currentOverview = this.getAPI.getCurrentOverview();
+  displayOverview() {
+    this.displayOverviewHeader();
+    this.displaytWeatherDetails();
+  }
 
+  displayOverviewHeader() {
+    const currentOverview = this.getAPI.getCurrentOverview();
+    // console.log(currentOverview);
     this.displayLocalTimezone(currentOverview.timezone);
     this.displayLocalWeatherCondition(currentOverview.localDescription);
     this.displayCurrentWeatherIcon(currentOverview.weatherIcon);
     this.displayCurrentDatetime();
   }
 
-  displayCurrentWeather() {
+  displaytWeatherDetails() {
     const todayWeatherDiv = document.querySelector(".today-weather");
 
     const todayDetails = todayWeatherDiv.querySelector(".today-details");
@@ -56,11 +62,13 @@ class ReportDOM {
 
     hourlyWeathers.forEach((hourlyWeather) => {
       const hourlyWeatherDiv = document.createElement("div");
-      const hourlyTempSpan = document.createElement("div");
-      const hourlyFeelsLikeTempSpan = document.createElement("div");
       const hourlySpan = document.createElement("div");
-      const hourlyHumiditySpan = document.createElement("div");
+      const hourlyWeatherIcon = document.createElement("img");
       const hourlyConditionSpan = document.createElement("div");
+      const hourlyWeatherDetails = document.createElement("div");
+      const hourlyFeelsLikeTempSpan = document.createElement("div");
+      const hourlyTempSpan = document.createElement("div");
+      const hourlyHumiditySpan = document.createElement("div");
 
       hourlyWeatherDiv.classList.add("hourly-item");
       hourlyTempSpan.classList.add("hourly-temp");
@@ -68,21 +76,38 @@ class ReportDOM {
       hourlySpan.classList.add("hourly-hour");
       hourlyHumiditySpan.classList.add("hourly-humidity");
       hourlyConditionSpan.classList.add("hourly-condition");
+      hourlyWeatherDetails.classList.add("hourly-weather-details");
+      hourlyWeatherIcon.classList.add("hourly-weather-icon");
 
-      hourlySpan.textContent = hourlyWeather.hour.slice(0, 5);
-      hourlyConditionSpan.textContent = hourlyWeather.conditions;
-      hourlyTempSpan.textContent = hourlyWeather.temp;
-      hourlyFeelsLikeTempSpan.textContent = hourlyWeather.feelslike;
-      hourlyHumiditySpan.textContent = hourlyWeather.humidity;
+      hourlySpan.innerHTML = hourlyWeather.hour.slice(0, 5);
+      hourlyConditionSpan.innerHTML = hourlyWeather.conditions;
+      hourlyTempSpan.innerHTML = "Temp: " + hourlyWeather.temp + " &deg;C";
+      hourlyFeelsLikeTempSpan.innerHTML =
+        "Feelslike: " + hourlyWeather.feelslike + " &deg;C";
+      hourlyHumiditySpan.innerHTML = "Hum: " + hourlyWeather.humidity;
+
+      import(`../resources/icon/small-weather/${hourlyWeather.icon}.png`)
+        .then((module) => {
+          hourlyWeatherIcon.src = module.default;
+        })
+        .catch((error) => {
+          hourlyWeatherIcon.src = defaultIcon;
+          console.log("not found" + error);
+        });
 
       hourlyWeatherDiv.append(
         hourlySpan,
         hourlyConditionSpan,
-        hourlyFeelsLikeTempSpan,
+        hourlyWeatherIcon
+      );
+
+      hourlyWeatherDetails.append(
         hourlyTempSpan,
+        hourlyFeelsLikeTempSpan,
         hourlyHumiditySpan
       );
 
+      hourlyWeatherDiv.appendChild(hourlyWeatherDetails);
       hourlyWrapper.append(hourlyWeatherDiv);
     });
   }
@@ -90,7 +115,7 @@ class ReportDOM {
   displayDailyWeather() {
     const dailyWeathers = this.getAPI.getdailyWeather();
     const dailyWrapper = document.querySelector(".daily-list");
-    console.log(dailyWeathers);
+    // console.log(dailyWeathers);
     dailyWeathers.forEach((dailyWeather) => {
       const dailyWeatherDiv = document.createElement("div");
       const dailyConditionSpan = document.createElement("div");
@@ -113,7 +138,7 @@ class ReportDOM {
       dailyHumiditySpan.classList.add("daily-humidity");
 
       dailySpan.textContent = dailyWeather.day;
-      console.log(dailyWeather.weatherIcon);
+      // console.log(dailyWeather.weatherIcon);
       import(
         `../resources/icon/small-weather/${dailyWeather.weatherIcon}.png`
       ).then((module) => {
@@ -150,7 +175,7 @@ class ReportDOM {
 
   displayCurrentWeatherIcon(weatherIcon) {
     const weatherIconDiv = document.querySelector(".description-weather-icon");
-
+    weatherIconDiv.innerHTML = "";
     const weatherIconImg = document.createElement("img");
     import(`../resources/icon/${weatherIcon}.png`).then((module) => {
       weatherIconImg.src = module.default;
@@ -199,6 +224,23 @@ class ReportDOM {
   displayLocalTimezone(localTimezone) {
     const currentOverviewDiv = document.querySelector(".current-overview");
     this.timezoneTitle.textContent = localTimezone;
+  }
+
+  displaySearchResult() {
+    const searchForm = document.querySelector(".search-form");
+    const searchLocationInput = searchForm.querySelector(".search-location");
+
+    // console.log(searchForm);
+    searchForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      // console.log(searchLocationInput.value);
+      await this.getAPI.setWeatherForecast(searchLocationInput.value);
+
+      this.displayOverview();
+      this.displayHourlyWeather();
+      this.displayDailyWeather();
+      this.displayBackgroundPhoto();
+    });
   }
 }
 export { ReportDOM };

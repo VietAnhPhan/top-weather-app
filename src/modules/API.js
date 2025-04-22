@@ -23,6 +23,7 @@ class API {
     try {
       if (localStorage.getItem("coordination")) {
         this.coordination = JSON.parse(localStorage.getItem("coordination"));
+
         return;
       }
       const location = await new Promise((resolve, reject) => {
@@ -40,19 +41,37 @@ class API {
     }
   }
 
-  async setWeatherForecast() {
-    if (localStorage.getItem("weather")) {
+  async setWeatherForecast(location = null) {
+    if (localStorage.getItem("weather") && !location) {
       this.weather = JSON.parse(localStorage.getItem("weather"));
+      // console.log("ABC");
       return;
     }
-    const weather = await fetch(
-      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${
-        this.coordination.latitude
-      },${this.coordination.longtitude}?key=${this.#WEATHER_API_KEY}`
-    );
-    this.weather = await weather.json();
+    let searchedResultWeather = null;
+    if (location) {
+      try {
+        searchedResultWeather = await fetch(
+          `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=${
+            this.#WEATHER_API_KEY
+          }`
+        );
 
-    localStorage.setItem("weather", JSON.stringify(this.weather));
+        this.weather = await searchedResultWeather.json();
+      } catch (error) {
+        console.log(error);
+      }
+
+      // console.log(this.weather);
+    } else {
+      searchedResultWeather = await fetch(
+        `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${
+          this.coordination.latitude
+        },${this.coordination.longtitude}?key=${this.#WEATHER_API_KEY}`
+      );
+
+      this.weather = await searchedResultWeather.json();
+      localStorage.setItem("weather", JSON.stringify(this.weather));
+    }
   }
 
   async setBackgroundWeather() {
@@ -63,14 +82,18 @@ class API {
 
     const client = createClient(this.#PEXELS_API_KEY);
 
-    const query = "Nature";
+    const query = "hochiminh";
 
-    const searchedphotos = await client.photos.search({
-      query,
-      per_page: 1,
+    // const searchedphotos = await client.photos.search({
+    //   query,
+    //   per_page: 1,
+    // });
+
+    const searchedphoto = await client.photos.show({
+      id: " 9877276",
     });
 
-    this.backgroundURL = searchedphotos.photos[0].src.landscape;
+    this.backgroundURL = searchedphoto.src.original;
     localStorage.setItem("backgroundURL", this.backgroundURL);
   }
 
@@ -108,12 +131,14 @@ class API {
   }
 
   getHourlyWeather() {
+    // console.log(this.weather.days[0]);
     const hourlyWeather = this.weather.days[0].hours.map((hour) => ({
       hour: hour.datetime,
       temp: hour.temp,
       feelslike: hour.feelslike,
       humidity: hour.humidity,
       conditions: hour.conditions,
+      icon: hour.icon,
     }));
 
     return hourlyWeather;
@@ -135,6 +160,12 @@ class API {
 
   getBackgroundURL() {
     return this.backgroundURL;
+  }
+
+  setLocation(location) {}
+
+  getWeather() {
+    return this.weather;
   }
 }
 
