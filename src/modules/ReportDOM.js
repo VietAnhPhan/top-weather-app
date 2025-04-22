@@ -27,7 +27,9 @@ class ReportDOM {
   displayOverviewHeader() {
     const currentOverview = this.getAPI.getCurrentOverview();
     // console.log(currentOverview);
-    this.displayLocalTimezone(currentOverview.timezone);
+    this.displayLocalTimezone(
+      this.getAPI.getFormattedLocation(currentOverview.timezone)
+    );
     this.displayLocalWeatherCondition(currentOverview.localDescription);
     this.displayCurrentWeatherIcon(currentOverview.weatherIcon);
     this.displayCurrentDatetime();
@@ -142,11 +144,20 @@ class ReportDOM {
 
       dailySpan.textContent = dailyWeather.day;
       // console.log(dailyWeather.weatherIcon);
-      import(
-        `../resources/icon/small-weather/${dailyWeather.weatherIcon}.png`
-      ).then((module) => {
-        weatherIcon.src = module.default;
-      });
+      // import(
+      //   `../resources/icon/small-weather/${dailyWeather.weatherIcon}.png`
+      // ).then((module) => {
+      //   weatherIcon.src = module.default;
+      // });
+
+      import(`../resources/icon/small-weather/${dailyWeather.weatherIcon}.png`)
+        .then((module) => {
+          weatherIcon.src = module.default;
+        })
+        .catch((error) => {
+          weatherIcon.src = defaultIcon;
+          console.log("not found" + error);
+        });
 
       dailyConditionSpan.innerHTML = dailyWeather.conditions;
       dailyMaxTempSpan.innerHTML = "Max: " + dailyWeather.maxTemp + " &deg;C";
@@ -180,9 +191,15 @@ class ReportDOM {
     const weatherIconDiv = document.querySelector(".description-weather-icon");
     weatherIconDiv.innerHTML = "";
     const weatherIconImg = document.createElement("img");
-    import(`../resources/icon/${weatherIcon}.png`).then((module) => {
-      weatherIconImg.src = module.default;
-    });
+
+    import(`../resources/icon/small-weather/${weatherIcon}.png`)
+      .then((module) => {
+        weatherIconImg.src = module.default;
+      })
+      .catch((error) => {
+        weatherIconImg.src = defaultIcon;
+        console.log("not found" + error);
+      });
 
     weatherIconDiv.appendChild(weatherIconImg);
   }
