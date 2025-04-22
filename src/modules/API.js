@@ -51,9 +51,9 @@ class API {
     if (location) {
       try {
         searchedResultWeather = await fetch(
-          `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=${
+          `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?unitGroup=us&key=${
             this.#WEATHER_API_KEY
-          }`
+          }&contentType=json`
         );
 
         this.weather = await searchedResultWeather.json();
@@ -70,7 +70,9 @@ class API {
       searchedResultWeather = await fetch(
         `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${
           this.coordination.latitude
-        },${this.coordination.longtitude}?key=${this.#WEATHER_API_KEY}`
+        },${this.coordination.longtitude}?unitGroup=us&key=${
+          this.#WEATHER_API_KEY
+        }&contentType=json`
       );
 
       this.weather = await searchedResultWeather.json();
@@ -197,6 +199,10 @@ class API {
     const removedUnderscoreLocation = underscoreLocation.replace(/_/g, " ");
 
     return removedUnderscoreLocation;
+  }
+
+  getSearchedLocation() {
+    return this.weather.address;
   }
 }
 

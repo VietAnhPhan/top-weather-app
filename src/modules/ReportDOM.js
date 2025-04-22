@@ -1,5 +1,6 @@
 import { api } from "./API";
 import defaultIcon from "../resources/icon/small-weather/cloudy.png";
+import { fahrenheitToCelsius } from "./HelperFunctions";
 
 class ReportDOM {
   constructor() {
@@ -19,17 +20,20 @@ class ReportDOM {
     this.displaySearchResult();
   }
 
-  displayOverview() {
-    this.displayOverviewHeader();
+  displayOverview(location = null) {
+    this.displayOverviewHeader(location);
     this.displaytWeatherDetails();
   }
 
-  displayOverviewHeader() {
+  displayOverviewHeader(location = null) {
     const currentOverview = this.getAPI.getCurrentOverview();
-    // console.log(currentOverview);
-    this.displayLocalTimezone(
-      this.getAPI.getFormattedLocation(currentOverview.timezone)
-    );
+    console.log(currentOverview);
+    const searchedLocation = location
+      ? currentOverview.address
+      : this.getAPI.getFormattedLocation(currentOverview.timezone);
+
+    console.log(searchedLocation);
+    this.displayLocalTimezone(searchedLocation);
     this.displayLocalWeatherCondition(currentOverview.localDescription);
     this.displayCurrentWeatherIcon(currentOverview.weatherIcon);
     this.displayCurrentDatetime();
@@ -49,9 +53,9 @@ class ReportDOM {
 
     const todayWeather = this.getAPI.getTodayWeather();
 
-    todayMinTempSpan.textContent = todayWeather.minTemp;
-    todayMaxTempSpan.textContent = todayWeather.maxTemp;
-    todayAvgTempSpan.textContent = todayWeather.avgTemp;
+    todayMinTempSpan.textContent = fahrenheitToCelsius(todayWeather.minTemp);
+    todayMaxTempSpan.textContent = fahrenheitToCelsius(todayWeather.maxTemp);
+    todayAvgTempSpan.textContent = fahrenheitToCelsius(todayWeather.avgTemp);
     todayHumiditySpan.textContent = todayWeather.humidity;
     todayUVindexSpan.textContent = todayWeather.uvindex;
     todaySunriseSpan.textContent = todayWeather.sunrise;
@@ -255,10 +259,10 @@ class ReportDOM {
       event.preventDefault();
       // console.log(searchLocationInput.value);
       await this.getAPI.setWeatherForecast(searchLocationInput.value);
-      await this.getAPI.setBackgroundWeather(
-        this.getAPI.getFormattedLocation()
-      );
-      this.displayOverview();
+      await this.getAPI.setBackgroundWeather(this.getAPI.getSearchedLocation());
+      const searchedLocation = this.getAPI.getSearchedLocation();
+
+      this.displayOverview(searchedLocation);
       this.displayHourlyWeather();
       this.displayDailyWeather();
       this.displayBackgroundPhoto();
