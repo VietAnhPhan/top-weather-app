@@ -60,6 +60,8 @@ class ReportDOM {
     const hourlyWeathers = this.getAPI.getHourlyWeather();
     const hourlyWrapper = document.querySelector(".hourly-list");
 
+    hourlyWrapper.innerHTML = "";
+
     hourlyWeathers.forEach((hourlyWeather) => {
       const hourlyWeatherDiv = document.createElement("div");
       const hourlySpan = document.createElement("div");
@@ -115,6 +117,7 @@ class ReportDOM {
   displayDailyWeather() {
     const dailyWeathers = this.getAPI.getdailyWeather();
     const dailyWrapper = document.querySelector(".daily-list");
+    dailyWrapper.innerHTML = "";
     // console.log(dailyWeathers);
     dailyWeathers.forEach((dailyWeather) => {
       const dailyWeatherDiv = document.createElement("div");
