@@ -20,7 +20,7 @@
             <div class="unit-control">
                 <input type="radio" name="temperature" id="fahrenheit" value="fahrenheit">
                 <label for="fahrenheit">Fahrenheit</label>
-                <input type="radio" name="temperature" id="celsius" value="celsius">
+                <input type="radio" name="temperature" id="celsius" value="celsius" checked>
                 <label for="celsius">Celsius</label>
             </div>
             <div class="current-overview gradient-bg">
@@ -36,11 +36,11 @@
                 <div class="today-weather ">
 
                     <div class="today-details">
-                        <div class="today-detail"><span>Max temp: </span><span
+                        <div class="today-detail"><span>Max temp(<span class="temperature-unit"></span>): </span><span
                                 class="today-detail-value today-max-temp"></span></div>
-                        <div class="today-detail"><span>Min temp: </span><span
+                        <div class="today-detail"><span>Min temp(<span class="temperature-unit"></span>): </span><span
                                 class="today-detail-value today-min-temp"></span></div>
-                        <div class="today-detail"><span>Avg temp: </span><span
+                        <div class="today-detail"><span>Avg temp(<span class="temperature-unit"></span>): </span><span
                                 class="today-detail-value today-avg-temp"></span></div>
                         <div class="today-detail"><span>Humidity: </span><span
                                 class="today-detail-value today-humidity"></span></div>

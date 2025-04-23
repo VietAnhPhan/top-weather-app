@@ -1,6 +1,6 @@
 import { api } from "./API";
 import defaultIcon from "../resources/icon/small-weather/cloudy.png";
-import { fahrenheitToCelsius } from "./HelperFunctions";
+import { fahrenheitToCelsius, celsiusToFahrenheit } from "./HelperFunctions";
 
 class ReportDOM {
   constructor() {
@@ -18,6 +18,7 @@ class ReportDOM {
     this.displayDailyWeather();
     this.displayBackgroundPhoto();
     this.displaySearchResult();
+    this.convertUnit();
   }
 
   displayOverview(location = null) {
@@ -41,6 +42,9 @@ class ReportDOM {
 
   displaytWeatherDetails() {
     const todayWeatherDiv = document.querySelector(".today-weather");
+    const todayTempUnitSpans = Array.from(
+      todayWeatherDiv.querySelectorAll(".temperature-unit")
+    );
 
     const todayDetails = todayWeatherDiv.querySelector(".today-details");
     const todayMinTempSpan = todayDetails.querySelector(".today-min-temp");
@@ -60,6 +64,10 @@ class ReportDOM {
     todayUVindexSpan.textContent = todayWeather.uvindex;
     todaySunriseSpan.textContent = todayWeather.sunrise;
     todaySunsetSpan.textContent = todayWeather.sunset;
+
+    todayTempUnitSpans.forEach((todayTempUnitSpan) => {
+      todayTempUnitSpan.innerHTML = "&deg;C";
+    });
   }
 
   displayHourlyWeather() {
@@ -89,10 +97,27 @@ class ReportDOM {
 
       hourlySpan.innerHTML = hourlyWeather.hour.slice(0, 5);
       hourlyConditionSpan.innerHTML = hourlyWeather.conditions;
-      hourlyTempSpan.innerHTML = "Temp: " + hourlyWeather.temp + " &deg;C";
+      hourlyTempSpan.innerHTML =
+        "Temp: " +
+        "<span class ='hourly-temp-value'>" +
+        fahrenheitToCelsius(hourlyWeather.temp) +
+        "</span>" +
+        "<span class ='temperature-unit'>" +
+        " &deg;C" +
+        "</span>";
       hourlyFeelsLikeTempSpan.innerHTML =
-        "Feelslike: " + hourlyWeather.feelslike + " &deg;C";
-      hourlyHumiditySpan.innerHTML = "Hum: " + hourlyWeather.humidity;
+        "Feelslike: " +
+        "<span class ='hourly-feelslike-value'>" +
+        fahrenheitToCelsius(hourlyWeather.feelslike) +
+        "</span>" +
+        "<span class='temperature-unit'>" +
+        " &deg;C" +
+        "</span>";
+      hourlyHumiditySpan.innerHTML =
+        "Hum: " +
+        "<span class='hourly-humidity-value'>" +
+        hourlyWeather.humidity +
+        "</span>";
 
       import(`../resources/icon/small-weather/${hourlyWeather.icon}.png`)
         .then((module) => {
@@ -164,11 +189,35 @@ class ReportDOM {
         });
 
       dailyConditionSpan.innerHTML = dailyWeather.conditions;
-      dailyMaxTempSpan.innerHTML = "Max: " + dailyWeather.maxTemp + " &deg;C";
-      dailyMinTempSpan.innerHTML = "Min: " + dailyWeather.minTemp + " &deg;C";
+      dailyMaxTempSpan.innerHTML =
+        "Max: " +
+        "<span class='daily-max-temp-value'>" +
+        fahrenheitToCelsius(dailyWeather.maxTemp) +
+        "</span>" +
+        "<span class='temperature-unit'>" +
+        " &deg;C" +
+        "</span>";
+      dailyMinTempSpan.innerHTML =
+        "Min: " +
+        "<span class = 'daily-min-temp-value'>" +
+        fahrenheitToCelsius(dailyWeather.minTemp) +
+        "</span>" +
+        "<span class = 'temperature-unit'>" +
+        " &deg;C" +
+        "</span>";
       dailyFeelsLikeTempSpan.innerHTML =
-        "Feelslike: " + dailyWeather.feelslike + " &deg;C";
-      dailyHumiditySpan.innerHTML = "Hum: " + dailyWeather.humidity;
+        "Feelslike: " +
+        "<span class='daily-feelslike-temp-value'>" +
+        fahrenheitToCelsius(dailyWeather.feelslike) +
+        "</span>" +
+        "<span class='temperature-unit'>" +
+        " &deg;C" +
+        "</span>";
+      dailyHumiditySpan.innerHTML =
+        "Hum: " +
+        "<span class='daily-humidity-value'>" +
+        dailyWeather.humidity +
+        "</span>";
 
       dailyWeatherDiv.append(dailySpan, weatherIcon, dailyConditionSpan);
 
@@ -253,6 +302,11 @@ class ReportDOM {
   displaySearchResult() {
     const searchForm = document.querySelector(".search-form");
     const searchLocationInput = searchForm.querySelector(".search-location");
+    const hourlyList = document.querySelector(".hourly-list");
+    const dailyList = document.querySelector(".daily-list");
+
+    const hourlyItemDiv = hourlyList.querySelectorAll(".hourly-item");
+    const dailyItemDiv = dailyList.querySelectorAll(".daily-item");
 
     // console.log(searchForm);
     searchForm.addEventListener("submit", async (event) => {
@@ -261,11 +315,191 @@ class ReportDOM {
       await this.getAPI.setWeatherForecast(searchLocationInput.value);
       await this.getAPI.setBackgroundWeather(this.getAPI.getSearchedLocation());
       const searchedLocation = this.getAPI.getSearchedLocation();
+      const hourlyWeathers = this.getAPI.getHourlyWeather();
+      const dailyWeathers = this.getAPI.getdailyWeather();
 
       this.displayOverview(searchedLocation);
-      this.displayHourlyWeather();
-      this.displayDailyWeather();
+
+      hourlyItemDiv.forEach((hourlyItem, index) => {
+        hourlyItem.querySelector(".hourly-condition").textContent =
+          hourlyWeathers[index].conditions;
+        hourlyItem.querySelector(".hourly-temp-value").textContent =
+          fahrenheitToCelsius(hourlyWeathers[index].temp);
+        hourlyItem.querySelector(".hourly-feelslike-value").textContent =
+          fahrenheitToCelsius(hourlyWeathers[index].feelslike);
+        hourlyItem.querySelector(".hourly-humidity-value").textContent =
+          hourlyWeathers[index].humidity;
+      });
+
+      dailyItemDiv.forEach((dailyItem, index) => {
+        dailyItem.querySelector(".daily-max-temp-value").textContent =
+          fahrenheitToCelsius(dailyWeathers[index].maxTemp);
+        dailyItem.querySelector(".daily-min-temp-value").textContent =
+          fahrenheitToCelsius(dailyWeathers[index].minTemp);
+        dailyItem.querySelector(".daily-feelslike-temp-value").textContent =
+          fahrenheitToCelsius(dailyWeathers[index].feelslike);
+        dailyItem.querySelector(".daily-humidity-value").textContent =
+          dailyWeathers[index].humidity;
+      });
+
+      // this.displayHourlyWeather();
+      // this.displayDailyWeather();
       this.displayBackgroundPhoto();
+    });
+  }
+
+  convertUnit() {
+    const todayDetailsDiv = document.querySelector(".today-details");
+    const todayMinTempSpan = todayDetailsDiv.querySelector(".today-min-temp");
+    const todayMaxTempSpan = todayDetailsDiv.querySelector(".today-max-temp");
+    const todayAvgTempSpan = todayDetailsDiv.querySelector(".today-avg-temp");
+
+    const hourlyListDiv = document.querySelector(".hourly-list");
+    const hourlyTempValueSpans =
+      hourlyListDiv.querySelectorAll(".hourly-temp-value");
+    const hourlyFeelsLikeTempSpans = hourlyListDiv.querySelectorAll(
+      ".hourly-feelslike-value"
+    );
+    const dailyListDiv = document.querySelector(".daily-list");
+
+    // const temperatureUnitSpans = Array.from(
+    //   hourlyListDiv.querySelectorAll(".temperature-unit")
+    // ).push(...Array.from(dailyListDiv.querySelectorAll(".temperature-unit")));
+    const todayTempUnitSpans = Array.from(
+      todayDetailsDiv.querySelectorAll(".temperature-unit")
+    );
+    const hourlyTempUnitSpans = Array.from(
+      hourlyListDiv.querySelectorAll(".temperature-unit")
+    );
+    const dailyTempUnitSpans = Array.from(
+      dailyListDiv.querySelectorAll(".temperature-unit")
+    );
+    const allTempUnitSpans = [
+      ...todayTempUnitSpans,
+      ...hourlyTempUnitSpans,
+      ...dailyTempUnitSpans,
+    ];
+
+    // tempUnitSpans.forEach((item) => {
+    //   console.log(item);
+    // });
+    // console.log(hourlyTempUnitSpans);
+    const dailyMaxTempSpans = dailyListDiv.querySelectorAll(
+      ".daily-max-temp-value"
+    );
+    const dailyMinTempSpans = dailyListDiv.querySelectorAll(
+      ".daily-min-temp-value"
+    );
+    const dailyFeelslikeTempSpans = dailyListDiv.querySelectorAll(
+      ".daily-feelslike-temp-value"
+    );
+    // console.log(todayWeather);
+
+    const fahrenheitChoiceInput = document.querySelector("#fahrenheit");
+    fahrenheitChoiceInput.addEventListener("change", (event) => {
+      const todayWeather = this.getAPI.getTodayWeather();
+      const hourlyWeathers = this.getAPI.getHourlyWeather();
+      const dailyWeathers = this.getAPI.getdailyWeather();
+      // console.log(hourlyWeathers);
+      todayMinTempSpan.textContent = todayWeather.minTemp;
+      todayMaxTempSpan.textContent = todayWeather.maxTemp;
+      todayAvgTempSpan.textContent = todayWeather.avgTemp;
+      console.log(hourlyTempValueSpans);
+      hourlyTempValueSpans.forEach((hourlyTempSpan, index) => {
+        hourlyTempSpan.textContent = hourlyWeathers[index].temp;
+        console.log(hourlyTempSpan.textContent);
+      });
+
+      hourlyFeelsLikeTempSpans.forEach((hourlyTempSpan, index) => {
+        hourlyTempSpan.textContent = hourlyWeathers[index].feelslike;
+      });
+
+      allTempUnitSpans.forEach((temperatureUnitSpan) => {
+        temperatureUnitSpan.innerHTML = "&deg;F";
+      });
+
+      dailyMaxTempSpans.forEach((dailyMaxTempSpan, index) => {
+        dailyMaxTempSpan.textContent = dailyWeathers[index].maxTemp;
+      });
+
+      dailyMinTempSpans.forEach((dailyMinTempSpan, index) => {
+        dailyMinTempSpan.textContent = dailyWeathers[index].minTemp;
+      });
+
+      dailyFeelslikeTempSpans.forEach((dailyFeelslikeTempSpan, index) => {
+        dailyFeelslikeTempSpan.textContent = dailyWeathers[index].feelslike;
+      });
+    });
+
+    // const tempRadioInputs = document.querySelectorAll(
+    //   "input[name=temperature]"
+    // );
+
+    // tempRadioInputs.forEach((tempRadioInput) => {
+    //   if (tempRadioInput.value == "fahrenheit" && tempRadioInput.checked) {
+    //     console.log(tempRadioInput.value);
+    //   } else if (tempRadioInput.value == "celsius" && tempRadioInput.checked) {
+    //     console.log(tempRadioInput.value);
+    //   }
+
+    // });
+
+    const celsiusChoiceInput = document.querySelector("#celsius");
+    celsiusChoiceInput.addEventListener("change", (event) => {
+      // const todayWeather = this.getAPI.getTodayWeather();
+      // const hourlyWeathers = this.getAPI.getHourlyWeather();
+
+      // todayMinTempSpan.textContent = fahrenheitToCelsius(todayWeather.minTemp);
+      // todayMaxTempSpan.textContent = fahrenheitToCelsius(todayWeather.maxTemp);
+      // todayAvgTempSpan.textContent = fahrenheitToCelsius(todayWeather.avgTemp);
+
+      // hourlyTempSpans.forEach((hourlyTempSpan, index) => {
+      //   hourlyTempSpan.textContent = fahrenheitToCelsius(
+      //     hourlyWeathers[index].temp
+      //   );
+      // });
+
+      const todayWeather = this.getAPI.getTodayWeather();
+      const hourlyWeathers = this.getAPI.getHourlyWeather();
+      const dailyWeathers = this.getAPI.getdailyWeather();
+
+      todayMinTempSpan.textContent = fahrenheitToCelsius(todayWeather.minTemp);
+      todayMaxTempSpan.textContent = fahrenheitToCelsius(todayWeather.maxTemp);
+      todayAvgTempSpan.textContent = fahrenheitToCelsius(todayWeather.avgTemp);
+
+      hourlyTempValueSpans.forEach((hourlyTempSpan, index) => {
+        hourlyTempSpan.textContent = fahrenheitToCelsius(
+          hourlyWeathers[index].temp
+        );
+      });
+
+      hourlyFeelsLikeTempSpans.forEach((hourlyTempSpan, index) => {
+        hourlyTempSpan.textContent = fahrenheitToCelsius(
+          hourlyWeathers[index].feelslike
+        );
+      });
+
+      allTempUnitSpans.forEach((temperatureUnitSpan) => {
+        temperatureUnitSpan.innerHTML = "&deg;C";
+      });
+
+      dailyMaxTempSpans.forEach((dailyMaxTempSpan, index) => {
+        dailyMaxTempSpan.textContent = fahrenheitToCelsius(
+          dailyWeathers[index].maxTemp
+        );
+      });
+
+      dailyMinTempSpans.forEach((dailyMinTempSpan, index) => {
+        dailyMinTempSpan.textContent = fahrenheitToCelsius(
+          dailyWeathers[index].minTemp
+        );
+      });
+
+      dailyFeelslikeTempSpans.forEach((dailyFeelslikeTempSpan, index) => {
+        dailyFeelslikeTempSpan.textContent = fahrenheitToCelsius(
+          dailyWeathers[index].feelslike
+        );
+      });
     });
   }
 }
