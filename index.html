@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="shortcut icon" href="328112f45067dbdc02a3.png" type="image/x-icon">
+<script defer src="main.js"></script></head>
+
+<body>
+
+    <section class="overlay">
+        <div class="container">
+
+            <form action="" method="GET" class="search-form">
+                <input class="search-location" type="text" placeholder="Search the city">
+                <button class="search-submit"><img src="ba7099f52785d11b5037.png" alt=""></button>
+            </form>
+            <div class="unit-control">
+                <input type="radio" name="temperature" id="fahrenheit" value="fahrenheit">
+                <label for="fahrenheit">Fahrenheit</label>
+                <input type="radio" name="temperature" id="celsius" value="celsius" checked>
+                <label for="celsius">Celsius</label>
+            </div>
+            <div class="current-overview gradient-bg">
+                <div class="description-overview">
+                    <span class="timezone"><span class="timezone-icon"><img src="8bda69f62d359547895b.png"
+                                alt="">
+                        </span><span class="timezone-location"></span></span>
+                    <div class="description-weather-icon"></div>
+                    <p class="local-description"></p>
+                    <p class="today-date"></p>
+
+                    <div><span class="hours"></span><span class="minutes"></span></div>
+                </div>
+
+                <div class="today-weather ">
+
+                    <div class="today-details">
+                        <div class="today-detail"><span>Max temp(<span class="temperature-unit"></span>): </span><span
+                                class="today-detail-value today-max-temp"></span></div>
+                        <div class="today-detail"><span>Min temp(<span class="temperature-unit"></span>): </span><span
+                                class="today-detail-value today-min-temp"></span></div>
+                        <div class="today-detail"><span>Avg temp(<span class="temperature-unit"></span>): </span><span
+                                class="today-detail-value today-avg-temp"></span></div>
+                        <div class="today-detail"><span>Humidity: </span><span
+                                class="today-detail-value today-humidity"></span></div>
+                        <div class="today-detail"><span>UVindex: </span><span
+                                class="today-detail-value today-uvindex"></span></div>
+                        <div class="today-detail"><span>Sunrise: </span><span
+                                class="today-detail-value today-sunrise"></span></div>
+                        <div class="today-detail"><span>Sunset: </span><span
+                                class="today-detail-value today-sunset"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hourly gradient-bg">
+                <span class="hourly-title"><img style="display: block;" src="57b867efba7483edd709.png" alt="">
+                    <span>Hourly</span></span>
+                <div class="hourly-wrapper">
+                    <div class="hourly-list"></div>
+                </div>
+            </div>
+            <div class="daily gradient-bg">
+                <span class="daily-title"><img style="display: block;" src="4e62c010c0b3d830954e.png"
+                        alt=""><span>Daily</span></span>
+                <div class="daily-wrapper">
+                    <div class="daily-list"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</body>
+
+</html>
