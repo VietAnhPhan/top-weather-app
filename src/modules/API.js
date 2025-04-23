@@ -108,18 +108,23 @@ class API {
 
     const query = location;
 
-    const searchedphotos = await client.photos.search({
-      query,
-      per_page: 1,
-    });
-
-    this.backgroundURL = searchedphotos.photos[0].src.original;
+    await client.photos
+      .search({
+        query,
+        per_page: 1,
+      })
+      .then((searchedphotos) => {
+        this.backgroundURL = searchedphotos.photos[0].src.original;
+      })
+      .catch((error) => {
+        console.log("The image not found: " + error);
+      });
 
     // const searchedphoto = await client.photos.show({
     //   id: " 9877276",
     // });
 
-    console.log(this.backgroundURL);
+    // console.log(this.backgroundURL);
   }
 
   getCoordinates() {

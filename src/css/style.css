@@ -119,13 +119,15 @@ label {
     font-weight: 600;
 }
 
-.daily-condition {
+.daily-condition,
+.hourly-condition {
     font-size: 14px;
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 25%);
 }
 
-.daily-weather-values {
+.daily-weather-values,
+.hourly-weather-details {
     padding-top: 8px;
 }
 
@@ -138,11 +140,15 @@ label {
     font-size: 14px;
 }
 
-.daily-weather-icon {
+.daily-weather-icon,
+.hourly-weather-icon {
     padding-block: 12px;
     max-width: 104px;
 }
 
+.hourly-hour {
+    font-weight: 600;
+}
 
 
 .current-overview,
@@ -214,7 +220,7 @@ section {
     /* padding-block: 21px; */
     flex: 0 0 auto;
 
-    background: rgba(0, 0, 0, 20%);
+    background: rgba(0, 0, 0, 50%);
     padding: 12px;
     border-radius: 8px;
 }

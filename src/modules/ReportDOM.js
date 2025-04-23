@@ -4,7 +4,7 @@ import { fahrenheitToCelsius, celsiusToFahrenheit } from "./HelperFunctions";
 
 class ReportDOM {
   constructor() {
-    this.timezoneTitle = document.querySelector(".timezone");
+    this.timezoneTitle = document.querySelector(".timezone-location");
 
     this.getAPI = null;
   }
@@ -12,7 +12,7 @@ class ReportDOM {
   async init() {
     this.getAPI = await api;
 
-    console.log(this.getAPI);
+    // console.log(this.getAPI);
     this.displayOverview();
     this.displayHourlyWeather();
     this.displayDailyWeather();
@@ -28,12 +28,12 @@ class ReportDOM {
 
   displayOverviewHeader(location = null) {
     const currentOverview = this.getAPI.getCurrentOverview();
-    console.log(currentOverview);
+    // console.log(currentOverview);
     const searchedLocation = location
       ? currentOverview.address
       : this.getAPI.getFormattedLocation(currentOverview.timezone);
 
-    console.log(searchedLocation);
+    // console.log(searchedLocation);
     this.displayLocalTimezone(searchedLocation);
     this.displayLocalWeatherCondition(currentOverview.localDescription);
     this.displayCurrentWeatherIcon(currentOverview.weatherIcon);
@@ -118,7 +118,7 @@ class ReportDOM {
         "<span class='hourly-humidity-value'>" +
         hourlyWeather.humidity +
         "</span>";
-
+      // console.log(hourlyWeather.icon);
       import(`../resources/icon/small-weather/${hourlyWeather.icon}.png`)
         .then((module) => {
           hourlyWeatherIcon.src = module.default;
@@ -130,8 +130,8 @@ class ReportDOM {
 
       hourlyWeatherDiv.append(
         hourlySpan,
-        hourlyConditionSpan,
-        hourlyWeatherIcon
+        hourlyWeatherIcon,
+        hourlyConditionSpan
       );
 
       hourlyWeatherDetails.append(
@@ -245,7 +245,7 @@ class ReportDOM {
     weatherIconDiv.innerHTML = "";
     const weatherIconImg = document.createElement("img");
 
-    import(`../resources/icon/small-weather/${weatherIcon}.png`)
+    import(`../resources/icon/large-weather/${weatherIcon}.png`)
       .then((module) => {
         weatherIconImg.src = module.default;
       })
@@ -404,10 +404,10 @@ class ReportDOM {
       todayMinTempSpan.textContent = todayWeather.minTemp;
       todayMaxTempSpan.textContent = todayWeather.maxTemp;
       todayAvgTempSpan.textContent = todayWeather.avgTemp;
-      console.log(hourlyTempValueSpans);
+      // console.log(hourlyTempValueSpans);
       hourlyTempValueSpans.forEach((hourlyTempSpan, index) => {
         hourlyTempSpan.textContent = hourlyWeathers[index].temp;
-        console.log(hourlyTempSpan.textContent);
+        // console.log(hourlyTempSpan.textContent);
       });
 
       hourlyFeelsLikeTempSpans.forEach((hourlyTempSpan, index) => {
